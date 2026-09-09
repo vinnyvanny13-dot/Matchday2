@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Fixtures — Matchsheet{% endblock %}
+{% block content %}
+
+<section class="datebar">
+  <form method="get" class="datebar__form">
+    <label for="date">Matchday</label>
+    <input type="date" id="date" name="date" value="{{ selected_date }}" onchange="this.form.submit()">
+  </form>
+</section>
+
+{% if error %}
+  <div class="notice notice--error">{{ error }}</div>
+{% elif not fixtures %}
+  <div class="notice">No fixtures found for {{ selected_date }}.</div>
+{% else %}
+  {% set ns = namespace(current_league="") %}
+  <div class="sheet">
+    {% for fx in fixtures %}
+      {% if fx.league != ns.current_league %}
+        {% set ns.current_league = fx.league %}
+        <h2 class="sheet__league">{{ fx.league }}</h2>
+      {% endif %}
+      <div class="row">
+        <a class="row__team row__team--home" href="/team/{{ fx.home_id }}">{{ fx.home }}</a>
+        <div class="row__score">
+          {% if fx.goals_home is not none %}
+            <span class="row__scoreline">{{ fx.goals_home }} – {{ fx.goals_away }}</span>
+          {% else %}
+            <span class="row__time">{{ fx.date[11:16] }}</span>
+          {% endif %}
+        </div>
+        <a class="row__team row__team--away" href="/team/{{ fx.away_id }}">{{ fx.away }}</a>
+        <a class="row__compare" href="/compare?team1={{ fx.home_id }}&team2={{ fx.away_id }}">analyse →</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% endblock %}

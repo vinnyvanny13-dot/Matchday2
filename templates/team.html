@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ info.team.name if info else "Team" }} — Matchsheet{% endblock %}
+{% block content %}
+
+{% if error %}
+  <div class="notice notice--error">{{ error }}</div>
+{% elif info %}
+  <section class="teamhead">
+    <h1 class="teamhead__name">{{ info.team.name }}</h1>
+    <span class="teamhead__meta">{{ info.team.country }} · founded {{ info.team.founded }}</span>
+    {% if stats %}
+      <span class="formstring">
+        {% for r in stats.form %}
+          <span class="formstring__pip formstring__pip--{{ r }}">{{ r }}</span>
+        {% endfor %}
+      </span>
+    {% endif %}
+  </section>
+
+  {% if stats %}
+  <section class="ledger">
+    <div class="ledger__row">
+      <span class="ledger__label">Matches analysed</span>
+      <span class="ledger__value">{{ stats.played }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Record</span>
+      <span class="ledger__value">{{ stats.wins }}W – {{ stats.draws }}D – {{ stats.losses }}L</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Goals scored / conceded</span>
+      <span class="ledger__value">{{ stats.goals_for }} / {{ stats.goals_against }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Avg. goals for / against</span>
+      <span class="ledger__value">{{ stats.gf_avg }} / {{ stats.ga_avg }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Clean sheets</span>
+      <span class="ledger__value">{{ stats.clean_sheet_pct }}%</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">BTTS</span>
+      <span class="ledger__value">{{ stats.btts_pct }}%</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Over 2.5 goals</span>
+      <span class="ledger__value">{{ stats.over25_pct }}%</span>
+    </div>
+  </section>
+  {% endif %}
+
+  {% if fixtures %}
+  <section class="sheet">
+    <h2 class="sheet__league">Last results</h2>
+    {% for fx in fixtures %}
+      <div class="row">
+        <span class="row__team">{{ fx.home }}</span>
+        <span class="row__score">
+          {% if fx.goals_home is not none %}{{ fx.goals_home }} – {{ fx.goals_away }}{% else %}{{ fx.status }}{% endif %}
+        </span>
+        <span class="row__team">{{ fx.away }}</span>
+        <span class="row__meta">{{ fx.date }}</span>
+      </div>
+    {% endfor %}
+  </section>
+  {% endif %}
+{% endif %}
+
+{% endblock %}

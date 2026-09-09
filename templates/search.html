@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Find a team — Matchsheet{% endblock %}
+{% block content %}
+
+<section class="searchbar">
+  <form method="get" class="searchbar__form">
+    <label for="q">Team name</label>
+    <input type="text" id="q" name="q" value="{{ query }}" placeholder="e.g. Arsenal" autofocus>
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+{% if error %}
+  <div class="notice notice--error">{{ error }}</div>
+{% elif query and not results %}
+  <div class="notice">No teams found for "{{ query }}".</div>
+{% elif results %}
+  <div class="sheet">
+    {% for t in results %}
+      <a class="row row--link" href="/team/{{ t.id }}">
+        <span class="row__team">{{ t.name }}</span>
+        <span class="row__meta">{{ t.country }}</span>
+      </a>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% endblock %}

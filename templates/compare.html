@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Match analysis — Matchsheet{% endblock %}
+{% block content %}
+
+<section class="searchbar">
+  <form method="get" class="searchbar__form searchbar__form--compare">
+    <label for="team1">Team 1 ID</label>
+    <input type="number" id="team1" name="team1" value="{{ team1_id or '' }}">
+    <label for="team2">Team 2 ID</label>
+    <input type="number" id="team2" name="team2" value="{{ team2_id or '' }}">
+    <button type="submit">Compare</button>
+  </form>
+  <p class="hint">Tip: find team IDs via <a href="/search">Teams search</a>, or click "analyse" on a fixture.</p>
+</section>
+
+{% if error %}
+  <div class="notice notice--error">{{ error }}</div>
+{% elif team1 and team2 %}
+  <section class="vs">
+    <h1 class="vs__title">{{ team1.info.team.name }} <span class="vs__x">vs</span> {{ team2.info.team.name }}</h1>
+  </section>
+
+  <section class="ledger ledger--compare">
+    <div class="ledger__row ledger__row--head">
+      <span class="ledger__value ledger__value--left">{{ team1.info.team.name }}</span>
+      <span class="ledger__label">Stat</span>
+      <span class="ledger__value ledger__value--right">{{ team2.info.team.name }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.form }}</span>
+      <span class="ledger__label">Form (recent → oldest)</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.form }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.wins }}W-{{ team1.stats.draws }}D-{{ team1.stats.losses }}L</span>
+      <span class="ledger__label">Record</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.wins }}W-{{ team2.stats.draws }}D-{{ team2.stats.losses }}L</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.gf_avg }}</span>
+      <span class="ledger__label">Avg. goals scored</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.gf_avg }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.ga_avg }}</span>
+      <span class="ledger__label">Avg. goals conceded</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.ga_avg }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.clean_sheet_pct }}%</span>
+      <span class="ledger__label">Clean sheets</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.clean_sheet_pct }}%</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.btts_pct }}%</span>
+      <span class="ledger__label">BTTS</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.btts_pct }}%</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__value ledger__value--left">{{ team1.stats.over25_pct }}%</span>
+      <span class="ledger__label">Over 2.5 goals</span>
+      <span class="ledger__value ledger__value--right">{{ team2.stats.over25_pct }}%</span>
+    </div>
+  </section>
+
+  {% if h2h %}
+  <section class="ledger">
+    <h2 class="sheet__league">Head-to-head (last {{ h2h.played }})</h2>
+    <div class="ledger__row">
+      <span class="ledger__label">{{ team1.info.team.name }} wins</span>
+      <span class="ledger__value">{{ h2h.wins1 }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">Draws</span>
+      <span class="ledger__value">{{ h2h.draws }}</span>
+    </div>
+    <div class="ledger__row">
+      <span class="ledger__label">{{ team2.info.team.name }} wins</span>
+      <span class="ledger__value">{{ h2h.wins2 }}</span>
+    </div>
+  </section>
+  {% endif %}
+{% endif %}
+
+{% endblock %}
